@@ -1,0 +1,9 @@
+project: savantenvs/kaiju
+target: mkbwt
+
+cmds:
+  - cmd: /mayhem/mkbwt -n 1 -o /tmp/out @@
+
+testsuite:
+  - https://$MAYHEM_DOMAIN/$MAYHEM_PROJECT/$MAYHEM_TARGET/testsuite.tar
+  - file://mayhem/mkbwt/testsuite
