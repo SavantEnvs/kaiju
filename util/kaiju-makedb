@@ -307,12 +307,19 @@ then
 		done
 		echo Downloading prot.accession2taxid.FULL.gz
 		wget -c -N -nv $wgetProgress -P $DB http://ftp.ncbi.nlm.nih.gov/pub/taxonomy/accession2taxid/prot.accession2taxid.FULL.gz
+		echo Downloading virus genomes from RefSeq
+		(cd $DB/source && curl --silent -f -O 'https://ftp.ncbi.nlm.nih.gov/refseq/release/viral/viral.[1-9].genomic.gbff.gz' || true)
+		(cd $DB/source && curl --silent -f -O 'https://ftp.ncbi.nlm.nih.gov/refseq/release/viral/viral.[1-9][0-9].genomic.gbff.gz' || true)
 	fi
 	[ -r $DB/prot.accession2taxid.FULL.gz ] || { echo Missing file prot.accession2taxid.FULL.gz; exit 1; }
 	if [ $index_only -eq 0 ]
 	then
 		echo "Converting RefSeq non-redundant proteins to Kaiju database"
-		gunzip -c $DB/source/complete.wp_protein.*.protein.faa.gz | kaiju-convertRefSeq -l $SCRIPTDIR/kaiju-taxonlistEuk.tsv -m merged.dmp -t nodes.dmp -g $DB/prot.accession2taxid.FULL.gz -a -o $DB/kaiju_db_$DB.faa 2>log
+		gunzip -c $DB/source/complete.wp_protein.*.protein.faa.gz | kaiju-convertRefSeq -m merged.dmp -t nodes.dmp -g $DB/prot.accession2taxid.FULL.gz -a -o $DB/kaiju_db_$DB.faa 2>log
+		echo "Converting RefSeq viral proteins to Kaiju database"
+		find $DB/source -name "viral.*.gbff.gz" | xargs -n 1 -P $parallelConversions -IXX kaiju-gbk2faa.pl XX XX.faa
+		# on-the-fly substitution of taxon IDs found in merged.dmp by their updated IDs
+		find $DB/source -name '*.faa' -print0 | xargs -0 cat | perl -lsne 'BEGIN{open(F,$m);while(<F>){@F=split(/[\|\s]+/);$h{$F[0]}=$F[1]}}if(/(>.+)_(\d+)/){print $1,"_",defined($h{$2})?$h{$2}:$2;}else{print}' -- -m=merged.dmp >>$DB/kaiju_db_$DB.faa 2>log
 	fi
 	[ -r $DB/kaiju_db_$DB.faa ] || { echo Missing file $DB/kaiju_db_$DB.faa; exit 1; }
 	echo Creating BWT from Kaiju database

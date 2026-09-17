@@ -100,7 +100,7 @@ respective index and for creating the index (in brackets).
 | Index name | Description | Sequences<sup>\*</sup> | RAM in GB (makedb)<sup>\*</sup> |
 | --- | --- | --- | --- |
 | `refseq` | Completely assembled and annotated reference genomes of Archaea, Bacteria, and viruses from the NCBI RefSeq database. | 164 M | 111 (144) |
-| `refseq_nr` | Sequences for Archaea, Bacteria, viruses and microbial eukaryotes from the [NCBI RefSeq non-redundant protein collection](https://www.ncbi.nlm.nih.gov/refseq/about/nonredundantproteins/). | 276 M | 153  (263) |
+| `refseq_nr` | Sequences for Archaea and Bacteria from the [NCBI RefSeq non-redundant protein collection](https://www.ncbi.nlm.nih.gov/refseq/about/nonredundantproteins/) + viruses from the NCBI RefSeq database. | 276 M | 153  (263) |
 | `refseq_ref` | Protein sequences from representative assemblies of Archaea and bacteria from NCBI RefSeq plus viruses from NCBI RefSeq. |  76.9 M | 54 (70) |
 | `progenomes` |  Representative set of genomes from the [proGenomes v3](http://progenomes.embl.de/) database and viruses from the NCBI RefSeq database. | 141 M | 102 (120) |
 | `viruses` |  Only viruses from the NCBI RefSeq database. | 0.68 M | 0.5 (0.6) |
